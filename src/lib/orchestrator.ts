@@ -16,6 +16,14 @@ async function orchestratorFetch<T = unknown>(path: string, timeout = 15000): Pr
     });
     clearTimeout(timer);
     if (!res.ok) throw new Error(`Orchestrator ${res.status}: ${await res.text()}`);
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      // e.g. an auth redirect landing on the HTML login page
+      const body = await res.text();
+      throw new Error(
+        `Orchestrator ${path} returned non-JSON (${res.status}, ${contentType || "no content-type"}): ${body.slice(0, 120)}`,
+      );
+    }
     return (await res.json()) as T;
   } catch (err) {
     clearTimeout(timer);
