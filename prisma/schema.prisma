@@ -40,6 +40,9 @@ model LinkedAccount {
   server                String
   login                 String
   broker                String?
+  // MT5 investor (read-only) password, AES-256-GCM encrypted (src/lib/crypto.ts).
+  // Required to verify/sync the account; never returned by any API response.
+  investorPasswordEnc   String?
 
   balance               Float     @default(0)
   equity                Float     @default(0)

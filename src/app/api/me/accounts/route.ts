@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth";
 import { fetchAccounts } from "@/lib/orchestrator";
+import { encrypt } from "@/lib/crypto";
 
 const SUPPORTED_BROKERS = ["ftmo", "aquafunded"];
 
@@ -13,7 +14,7 @@ export async function GET() {
     where: { userId: jwt.userId },
     orderBy: { createdAt: "desc" },
   });
-  return NextResponse.json(accounts);
+  return NextResponse.json(accounts.map(redactSecrets));
 }
 
 export async function POST(request: NextRequest) {
@@ -80,14 +81,20 @@ export async function POST(request: NextRequest) {
       server,
       login: String(login),
       broker,
+      investorPasswordEnc: encrypt(password),
       balance,
       equity,
     },
   });
 
   return NextResponse.json({
-    ...account,
+    ...redactSecrets(account),
     message: "Account submitted for verification. We will verify it has zero trade history and is a live challenge.",
     status: "PENDING",
   }, { status: 201 });
+}
+
+function redactSecrets<T extends { investorPasswordEnc?: string | null }>(account: T) {
+  const { investorPasswordEnc: _omit, ...rest } = account;
+  return rest;
 }
