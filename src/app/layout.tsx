@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Fullstory } from "@/components/fullstory";
+import { GoogleAnalytics } from "@/components/google-analytics";
 
 export const metadata: Metadata = {
   title: "ProofTrades - Prop Firm Challenge Tracker & Cashback",
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col antialiased">
         <Fullstory />
+        <GoogleAnalytics />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
