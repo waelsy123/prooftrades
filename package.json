@@ -16,6 +16,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@fullstory/browser": "^2.0.8",
     "@prisma/client": "^6.19.2",
     "@sentry/node": "^10.70.0",
     "bcryptjs": "^3.0.3",
