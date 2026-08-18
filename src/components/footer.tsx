@@ -74,7 +74,12 @@ export function Footer() {
                 <span className="text-sm text-zinc-500">About</span>
               </li>
               <li>
-                <span className="text-sm text-zinc-500">Contact</span>
+                <a
+                  href="mailto:help@prooftrades.com"
+                  className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+                >
+                  Contact: help@prooftrades.com
+                </a>
               </li>
               <li>
                 <span className="text-sm text-zinc-500">Careers</span>
