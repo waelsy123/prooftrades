@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth";
 import { fetchAccounts } from "@/lib/orchestrator";
 import { encrypt } from "@/lib/crypto";
+import { clientIp } from "@/lib/client-ip";
 
 const SUPPORTED_BROKERS = ["ftmo", "aquafunded"];
 
@@ -82,6 +83,7 @@ export async function POST(request: NextRequest) {
       login: String(login),
       broker,
       investorPasswordEnc: encrypt(password),
+      submitIp: clientIp(request),
       balance,
       equity,
     },

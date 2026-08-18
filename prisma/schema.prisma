@@ -13,6 +13,8 @@ model User {
   passwordHash String
   displayName  String
   avatarUrl    String?
+  // Captured server-side from X-Forwarded-For at signup (compliance).
+  registrationIp String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -43,6 +45,8 @@ model LinkedAccount {
   // MT5 investor (read-only) password, AES-256-GCM encrypted (src/lib/crypto.ts).
   // Required to verify/sync the account; never returned by any API response.
   investorPasswordEnc   String?
+  // Client IP at link submission, captured server-side (compliance).
+  submitIp              String?
 
   balance               Float     @default(0)
   equity                Float     @default(0)

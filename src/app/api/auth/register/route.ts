@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, signToken, COOKIE_NAME } from "@/lib/auth";
+import { clientIp } from "@/lib/client-ip";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
         email,
         passwordHash: await hashPassword(password),
         displayName,
+        registrationIp: clientIp(request),
         settings: { create: {} },
       },
     });
