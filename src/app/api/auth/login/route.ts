@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, signToken, COOKIE_NAME } from "@/lib/auth";
+import { clientIp } from "@/lib/client-ip";
+import { notifyOps } from "@/lib/notify";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +16,8 @@ export async function POST(request: NextRequest) {
     if (!user || !(await verifyPassword(password, user.passwordHash))) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
+
+    notifyOps("prooftrades login", `${user.email} logged in from IP ${clientIp(request) ?? "unknown"}`);
 
     const token = signToken({ userId: user.id, email: user.email });
     const res = NextResponse.json({ ok: true, userId: user.id });

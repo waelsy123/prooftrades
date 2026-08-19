@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, signToken, COOKIE_NAME } from "@/lib/auth";
 import { clientIp } from "@/lib/client-ip";
+import { notifyOps } from "@/lib/notify";
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,6 +29,12 @@ export async function POST(request: NextRequest) {
         settings: { create: {} },
       },
     });
+
+    notifyOps(
+      "New prooftrades registration",
+      `${email} (${displayName}) registered from IP ${clientIp(request) ?? "unknown"}`,
+      "ok"
+    );
 
     const token = signToken({ userId: user.id, email: user.email });
     const res = NextResponse.json({ ok: true, userId: user.id });

@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth";
 import { fetchAccounts } from "@/lib/orchestrator";
 import { encrypt } from "@/lib/crypto";
 import { clientIp } from "@/lib/client-ip";
+import { notifyOps } from "@/lib/notify";
 
 const SUPPORTED_BROKERS = ["ftmo", "aquafunded"];
 
@@ -88,6 +89,12 @@ export async function POST(request: NextRequest) {
       equity,
     },
   });
+
+  notifyOps(
+    "New trading account linked on prooftrades",
+    `${jwt.email} linked ${broker} account ${login} (server ${server}) from IP ${clientIp(request) ?? "unknown"} — pending verification`,
+    "ok"
+  );
 
   return NextResponse.json({
     ...redactSecrets(account),
