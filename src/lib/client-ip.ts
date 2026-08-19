@@ -12,3 +12,11 @@ export function clientIp(request: NextRequest): string | null {
   if (xff) return xff.split(",")[0].trim();
   return request.headers.get("x-real-ip");
 }
+
+// ISO-3166-1 alpha-2 country of the client, stamped by Cloudflare on
+// proxied requests (CF-IPCountry; "XX"=unknown, "T1"=Tor). Null when the
+// zone record is DNS-only.
+export function clientCountry(request: NextRequest): string | null {
+  const c = request.headers.get("cf-ipcountry");
+  return c && c !== "XX" ? c.toUpperCase() : null;
+}

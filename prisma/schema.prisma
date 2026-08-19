@@ -15,6 +15,7 @@ model User {
   avatarUrl    String?
   // Captured server-side from X-Forwarded-For at signup (compliance).
   registrationIp String?
+  registrationCountry String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -47,6 +48,7 @@ model LinkedAccount {
   investorPasswordEnc   String?
   // Client IP at link submission, captured server-side (compliance).
   submitIp              String?
+  submitCountry         String?
 
   balance               Float     @default(0)
   equity                Float     @default(0)

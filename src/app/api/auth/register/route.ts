@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, signToken, COOKIE_NAME } from "@/lib/auth";
-import { clientIp } from "@/lib/client-ip";
+import { clientIp, clientCountry } from "@/lib/client-ip";
 import { notifyOps } from "@/lib/notify";
 
 export async function POST(request: NextRequest) {
@@ -26,13 +26,14 @@ export async function POST(request: NextRequest) {
         passwordHash: await hashPassword(password),
         displayName,
         registrationIp: clientIp(request),
+        registrationCountry: clientCountry(request),
         settings: { create: {} },
       },
     });
 
     notifyOps(
       "New prooftrades registration",
-      `${email} (${displayName}) registered from IP ${clientIp(request) ?? "unknown"}`,
+      `${email} (${displayName}) registered from IP ${clientIp(request) ?? "unknown"} (${clientCountry(request) ?? "country unknown"})`,
       "ok"
     );
 

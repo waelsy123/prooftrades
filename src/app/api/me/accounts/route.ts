@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth";
 import { fetchAccounts } from "@/lib/orchestrator";
 import { encrypt } from "@/lib/crypto";
-import { clientIp } from "@/lib/client-ip";
+import { clientIp, clientCountry } from "@/lib/client-ip";
 import { notifyOps } from "@/lib/notify";
 
 const SUPPORTED_BROKERS = ["ftmo", "aquafunded"];
@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
       broker,
       investorPasswordEnc: encrypt(password),
       submitIp: clientIp(request),
+      submitCountry: clientCountry(request),
       balance,
       equity,
     },
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
 
   notifyOps(
     "New trading account linked on prooftrades",
-    `${jwt.email} linked ${broker} account ${login} (server ${server}) from IP ${clientIp(request) ?? "unknown"} — pending verification`,
+    `${jwt.email} linked ${broker} account ${login} (server ${server}) from IP ${clientIp(request) ?? "unknown"} (${clientCountry(request) ?? "country unknown"}) — pending verification`,
     "ok"
   );
 
